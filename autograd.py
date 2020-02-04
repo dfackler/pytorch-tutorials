@@ -32,3 +32,29 @@ print(x.grad)
 out.backward()  # backprop a single scalar
 print(out)
 print(x.grad)
+
+# autograd essentially engine to compute vector-Jacobian product
+x = torch.randn(3, requires_grad=True)
+y = x * 2
+print(y)
+while y.data.norm() < 1000:
+    y = y * 2
+print(y)
+
+# to get just vector-jacobian product use backward
+v = torch.tensor([0.1, 1.0, .000001], dtype=torch.float)
+y.backward(v)
+print(x.grad)
+
+# stop autograd tracking history on Tensors
+print(x.requires_grad)
+print((x**2).requires_grad)
+with torch.no_grad():
+    print((x**2).requires_grad)
+
+print(x.requires_grad)
+y = x.detach()
+print(y.requires_grad)
+print(x.eq(y).all())
+print(y)
+print(x)
