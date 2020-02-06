@@ -1,3 +1,4 @@
+import torch.optim as optim
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -93,3 +94,25 @@ print(loss)
 print(loss.grad_fn)
 print(loss.grad_fn.next_functions[0][0])  # linear
 print(loss.grad_fn.next_functions[0][0].next_functions[0][0])
+
+# backprop
+net.zero_grad()  # zeros the gradient buffers of all parameters
+print('conv1.bias.grad before backward')
+print(net.conv1.bias.grad)
+
+loss.backward()
+
+print('conv1.bias.grad after backward')
+print(net.conv1.bias.grad)
+
+# updating the weights
+
+# create optimizer
+optimizer = optim.SGD(net.parameters(), lr=0.01)
+
+# in your training loop:
+optimizer.zero_grad()
+output = net(input)
+loss = criterion(output, target)
+loss.backward()
+optimizer.step()
